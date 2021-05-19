@@ -1,3 +1,4 @@
+import datetime
 import os
 
 import keepachangelog
@@ -48,7 +49,7 @@ def create_github_release():
 
     GitHub().release(
         tag=release["version"],
-        new_title=f"{release['version']} ({release['release_date']})",
+        new_title=f"{release['version']} ({datetime.date.today().isoformat()})",
     )
 
 
