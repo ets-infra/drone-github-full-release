@@ -33,12 +33,13 @@ class GitHub:
         response.raise_for_status()
         return response
 
-    def release(self, tag: str, new_title: str):
-        release_id = self.get(f"/releases/tags/{tag}").json()["id"]
+    def release(self, tag: str, new_title: str, extra_content: str):
+        previous = self.get(f"/releases/tags/{tag}").json()
         self.patch(
-            f"/releases/{release_id}",
+            f"/releases/{previous['id']}",
             {
                 "name": new_title,
+                "body": f"{extra_content}\n{previous['body']}",
                 "prerelease": False
             }
         )
@@ -47,9 +48,12 @@ class GitHub:
 def create_github_release():
     release = get_latest_version(os.getenv('PLUGIN_CHANGELOG_PATH', "CHANGELOG.md"))
 
+    technical_information = f"Release done on {datetime.date.today().isoformat()} ({datetime.datetime.utcnow().isoformat()} UTC)"
+
     GitHub().release(
-        tag=release["version"],
-        new_title=f"{release['version']} ({datetime.date.today().isoformat()})",
+        tag=release["metadata"]["version"],
+        new_title=f"{release['metadata']['version']} ({datetime.date.today().isoformat()})",
+        extra_content=technical_information,
     )
 
 
