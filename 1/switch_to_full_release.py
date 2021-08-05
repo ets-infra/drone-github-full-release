@@ -50,6 +50,8 @@ def create_github_release():
 
     technical_information = f"Release done on {datetime.date.today().isoformat()} ({datetime.datetime.utcnow().isoformat()} UTC)"
 
+    print(f"Switching GitHub pre-release to full release ({release['metadata']['version']} tag).")
+
     GitHub().release(
         tag=release["metadata"]["version"],
         new_title=f"{release['metadata']['version']} ({datetime.date.today().isoformat()})",
@@ -59,7 +61,7 @@ def create_github_release():
 
 def get_latest_version(changelog_path: str) -> dict:
     releases = keepachangelog.to_raw_dict(changelog_path)
-    new_version = sorted(releases.keys())[-1]
+    new_version, _ = keepachangelog.to_sorted_semantic(releases.keys())[-1]
     return releases[new_version]
 
 
