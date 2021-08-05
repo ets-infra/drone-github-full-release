@@ -1,2 +1,2 @@
-keepachangelog==2.0.0.dev1
-requests==2.25.1
+keepachangelog==2.0.0.dev2
+requests==2.26.0
